@@ -1,7 +1,8 @@
+from cycler import cycler
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.image as mpimg
-from cycler import cycler
+import matplotlib.colors 
 import os
 import warnings
 
@@ -28,12 +29,21 @@ pallets = {
     'sequential2': ('#fce829ff', '#b1dc44ff', '#6dc960ff',
                     '#2bb275ff', '#009a80ff', '#008080ff', '#0d636fff'),
     'diverging': ('#e02928ff', '#f07867ff', '#f6b5a9ff',
-                  '#efefefff', '#b1c5deff', ' #739fceff', '#0f78baff'),
+                  '#efefefff', '#b1c5deff', '#739fceff', '#0f78baff'),
     'misc': ('#F5CC00', '#3EB2C6', '#003A79')
 }
 
-# TODO: Add extended pallets
-# extended_pallets = {}
+extended_pallets = {
+    'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
+    'vivid blue': ('#023147', '#004B6E', '#00649F', '#1479BB', '#1E8AD6', '#3398EA', '#5AADF6', '#8AC6FF', '#BFDFFC'),
+    'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
+    'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
+    'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F5CC00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
+    'orange': ('#663205', '#994B08', '#B85B0A', '#F26D00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
+    'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
+    'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
+    'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC')
+}
 
 
 def set_theme(font_size=14, line_width=1.4, web=False):
@@ -226,11 +236,37 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25):
     ax.axis('off')
 
 
-def get_cmap():
+def get_cmap(name, reverse=False):
     '''
+    Given a color map name returns a Brookings theme color maps.
+
+    name (str): Name of the color map from either the color pallet or 
+        extended color pallet.
+
+    reverse (bool): If the color map should be reversed
     '''
-    #TODO: Add color maps from pallets and extended color pallets
-    pass
+    # Valid color pallets from ggbrookings pallet 
+    gg_pallets = ['diverging', 'sequential1', 'sequential2', 'political1', 
+            'political2', 'contrasting1', 'contrasting2']
+
+    # All valid color maps
+    valid_pallets = gg_pallets + list(extended_pallets.keys())
+    # If name is invalid throw an error
+    if name not in valid_pallets:
+        raise Exception('No such pallet "' + name + '"  Try one of the following: ' + str(valid_pallets))
+
+    # Get the colors from the correct dictionary
+    if name in gg_pallets:
+        colors = pallets[name]
+    else:
+        colors = extended_pallets[name]
+
+    # Reverse colors if needed
+    if reverse:
+        colors = colors[::-1]
+
+    # Return a color map over the list of colors
+    return matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
 
 
 def set_pallet(name, ax=None, reverse=False):
