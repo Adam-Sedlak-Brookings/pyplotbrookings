@@ -3,10 +3,13 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.image as mpimg
 import matplotlib.colors 
+from matplotlib import font_manager
+import numpy as np
 import os
 import warnings
 
-pallets = {
+
+palettes = {
     'brand1': ('#FF9E1B', '#8AC6FF', '#003A79'),
     'brand2': ('#D0D3D4', '#FF9E1B', '#003A79'),
     'analogous1': ('#8AC6FF', '#003A79'),
@@ -33,7 +36,7 @@ pallets = {
     'misc': ('#F5CC00', '#3EB2C6', '#003A79')
 }
 
-extended_pallets = {
+extended_palettes = {
     'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
     'vivid blue': ('#023147', '#004B6E', '#00649F', '#1479BB', '#1E8AD6', '#3398EA', '#5AADF6', '#8AC6FF', '#BFDFFC'),
     'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
@@ -78,6 +81,9 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.left': False,
         'axes.spines.right': False,
         'axes.spines.top': False,
+        # Set default cycler
+        'axes.prop_cycle': mpl.cycler(color=palettes['brand1']),
+        'image.cmap': get_cmap('brand blue'),
 
         'figure.figsize': (8, 4.5),
         'font.size': font_size,
@@ -90,6 +96,8 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'legend.handlelength': 0.75,  # Shorten size of legend key
         'legend.borderaxespad': -1,  # Place legend outside the figure
 
+        'patch.linewidth': 0,
+
         'ytick.left': False,
         'ytick.labelsize': 0.833*font_size,
         'xtick.labelsize': 0.833*font_size,
@@ -100,7 +108,7 @@ def set_theme(font_size=14, line_width=1.4, web=False):
 
 
 def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
-              title_pad=0, source_pad=0, text_pad=0):
+              title_pad=0, source_pad=0, text_pad=0, x_offset=None, src_note_gap=0):
     '''
     Adds titles and foot notes to the current figure.
 
@@ -125,6 +133,12 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
 
     text_pad (float): Number specifying additional amount of spacing to add
         between lines of text. May be necessary if a different figure size is used.
+
+    x_offset (float): The amount of additional space to offset the title and notes text
+        in the x direction (useful if y labels are long) 
+
+    src_note_gap (float): The additional amount of white space between the source 
+        text and the notes text.
     '''
     # Get the font size
     font_size = mpl.rcParams['font.size']
@@ -139,30 +153,38 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
     # Initialize offsets for spacing figure titles apart
     top_offset, bottom_offset = 0, 0
 
+    # If there is no specified x_offset parse the figures y axis
+    # labels for the longest string and shift text as needed
+    if x_offset is None:
+        y_labels = plt.gca().get_yticklabels()
+        x_offset = -max([len(s.get_text()) for s in y_labels]) / 140
+
     if subtitle:
-        plt.figtext(0.05, title_0, subtitle, size=font_size)
+        plt.figtext(0.05+x_offset, title_0, subtitle, size=font_size)
+        # Parse subtitle for the number of lines
+        n_lines = len(subtitle.split('\n'))
         # Increment next titles vertical offset if text was added
-        top_offset += font_size * text_pad
+        top_offset += font_size * n_lines * text_pad
 
     if title:
-        plt.figtext(0.05, title_0+top_offset, title,
+        plt.figtext(0.05+x_offset, title_0+top_offset, title,
                     size=1.2*font_size, color='#003A79', weight='bold')
         # Increment next titles vertical offset if text was added
         top_offset += font_size * text_pad * 1.2
 
     if tag:
-        plt.figtext(0.05, title_0+top_offset, tag,
+        plt.figtext(0.05+x_offset, title_0+top_offset, tag,
                     # Increment next titles vertical offset if text was added
                     size=0.8*font_size, color='#003A79', weight='light')
 
     if source:
-        plt.figtext(0.05, source_0,
+        plt.figtext(0.05+x_offset, source_0,
                     r"$\bf{Source:}$ " + source, size=0.8*font_size, color="#666666")
         # Increment the notes vertical offset if text was added
-        bottom_offset += font_size * text_pad * 0.8
+        bottom_offset += font_size * text_pad * 0.8 + src_note_gap
 
     if notes:
-        plt.figtext(0.05, source_0 - bottom_offset,
+        plt.figtext(0.05+x_offset, source_0 - bottom_offset,
                     r"$\bf{Notes:}$ " + notes, size=0.8*font_size, color="#666666")
 
 
@@ -240,26 +262,26 @@ def get_cmap(name, reverse=False):
     '''
     Given a color map name returns a Brookings theme color maps.
 
-    name (str): Name of the color map from either the color pallet or 
-        extended color pallet.
+    name (str): Name of the color map from either the color palette or 
+        extended color palette.
 
     reverse (bool): If the color map should be reversed
     '''
-    # Valid color pallets from ggbrookings pallet 
-    gg_pallets = ['diverging', 'sequential1', 'sequential2', 'political1', 
+    # Valid color palettes from ggbrookings palette 
+    gg_palettes = ['diverging', 'sequential1', 'sequential2', 'political1', 
             'political2', 'contrasting1', 'contrasting2']
 
     # All valid color maps
-    valid_pallets = gg_pallets + list(extended_pallets.keys())
+    valid_palettes = gg_palettes + list(extended_palettes.keys())
     # If name is invalid throw an error
-    if name not in valid_pallets:
-        raise Exception('No such pallet "' + name + '"  Try one of the following: ' + str(valid_pallets))
+    if name not in valid_palettes:
+        raise Exception('No such palette "' + name + '"  Try one of the following: ' + str(valid_palettes))
 
     # Get the colors from the correct dictionary
-    if name in gg_pallets:
-        colors = pallets[name]
+    if name in gg_palettes:
+        colors = palettes[name]
     else:
-        colors = extended_pallets[name]
+        colors = extended_palettes[name]
 
     # Reverse colors if needed
     if reverse:
@@ -269,41 +291,168 @@ def get_cmap(name, reverse=False):
     return matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
 
 
-def set_pallet(name, ax=None, reverse=False):
+def set_palette(name, ax=None, reverse=False):
     '''
-    Sets the a color pallet cycler for the current axis
+    Sets the a color palette cycler for the current axis
 
-    name (str): Name of the Brookings color pallet
+    name (str): Name of the Brookings color palette
 
     ax: Optional matplotlib axis object to specify which axis to apply 
-        the color pallet to
+        the color palette to
 
-    reverse (bool): If the color pallet should be reversed
+    reverse (bool): If the color palette should be reversed
     '''
 
-    # Check if there's a key for the user pallet name
+    # Check if there's a key for the user palette name
     try:
-        pallet = pallets[name]
+        palette = palettes[name]
 
-    # Throw error with all pallet names if there's no key value pair
+    # Throw error with all palette names if there's no key value pair
     except KeyError:
         raise Exception(
-            '"' + str(name)+'" is not a valid color pallet. Try one of the following: ' + str(list(pallets.keys())))
+            '"' + str(name)+'" is not a valid color palette. Try one of the following: ' + str(list(palettes.keys())))
 
-    # pos_neg color pallets are not good for RG color blindness
-    if 'pos_neg' in name:
-        warnings.warn(
-            "This pallet is not high contrast for people color blindness (specifically protanopia and deuteranopia), please avoid using")
+    # pos_neg color palettes are not good for RG color blindness
+    if name in ['pos_neg1', 'pos_neg2']:
+        warnings.warn("This palette is accessible but NOT contrasting for people with color red-green blindness.")
     
-    # Reverse the pallet if specified
+    # Reverse the palette if specified
     if reverse:
-            pallet = pallet[::-1]
+            palette = palette[::-1]
 
     # Get current axis if not specified
     if not ax:
         ax = plt.gca()
 
-    # Create a cycler for the selected color pallet
-    pallet_cycler = cycler(color=pallet)
+    # Create a cycler for the selected color palette
+    palette_cycler = cycler(color=palette)
     # Set the cycler as base for the current/given axis
-    ax.set_prop_cycle(pallet_cycler)
+    ax.set_prop_cycle(palette_cycler)
+
+
+def text_color(hexcolor):
+    '''
+    Returns recommended color of text (either black or white) 
+    to use with the given hexcolor as a background color. Color
+    selection is adherent to W3C guidelines. 
+    
+    hexcolor (str): String of a hexidecimal color
+    
+    @Source: Mark Ransom (https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color)
+    '''
+    # Convert hexcolor code to RGB
+    rgb_color = list(int(hexcolor[i:i+2], 16) for i in (1, 3, 5))
+    
+    # Adjusting RGB values
+    rgb_new = []
+    for c in rgb_color:
+        c = c / 255.0
+        if c <= 0.04045:
+            c = c/12.92 
+        else:
+            c = ((c+0.055)/1.055) ** 2.4
+        rgb_new.append(c)
+    # Getting color luminosity
+    L = 0.2126 * rgb_new[0] + 0.7152 * rgb_new[1] + 0.0722 * rgb_new[2]
+    
+    # Return black or white depending on color luminosity
+    return '#000000' if L > 0.179 else '#FFFFFF'
+
+
+def view_palette(name):
+    '''
+    Given a color palette (base or extended) creates a preview of the palette
+    '''
+
+    # All valid color maps
+    valid_palettes = list(palettes.keys()) + list(extended_palettes.keys())
+    
+    # If name is invalid throw an error
+    if name not in valid_palettes:
+        raise Exception('No such palette "' + name + '"  Try one of the following: ' + str(valid_palettes))
+    
+    # Otherwise get the correct color
+    if name in palettes.keys():
+        palette = palettes[name]
+        
+    elif name in extended_palettes.keys():
+        palette = extended_palettes[name]
+    
+    # Cast color to an array
+    palette = np.array(palette)
+    
+    # Number of columns in the final figure 
+    cols = int(np.ceil(len(palette)/2))
+    
+    # Reshape the data into a 2D image
+    data = np.arange(2*cols).reshape(2, cols)
+    
+    # Append white "squares" to the end of the color map 
+    palette_extended = np.append(palette, np.repeat('#FFFFFF', len(palette) % 2))
+    
+    # Create a color map
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", palette_extended)
+    # Plot the image
+    plt.imshow(data, cmap=cmap)
+    
+    # Counter for the order of the colors
+    k = 0
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            
+            
+            # If the palette is white breakout of labeling the colors
+            if k >= len(palette):
+                break
+
+            # Get the correct text color
+            color = text_color(palette[k])
+
+            # Plot text on top of the palette color with the correct color
+            # showing the hexcode and palette order number
+            plt.text(j, i, str(k + 1) + '\n' + palette[k].upper(),
+                           ha="center", va="center", color=color)
+            # Increase the counter
+            k += 1
+    
+    plt.axis('off')
+    plt.show()
+
+
+def import_roboto():
+    '''
+    Import the Roboto font and add it as the default font family
+    '''
+    cwd = os.getcwd()
+    font_files = font_manager.findSystemFonts(fontpaths=cwd, fontext="ttf")
+
+    for font_file in font_files:
+        font_manager.fontManager.addfont(font_file)
+        
+    mpl.rcParams['font.family'] = 'Roboto'
+
+
+def figure(size):
+    '''
+    Create a figure using one of the standard Brookings sizes
+    '''
+    sizes = {'small': (3.25, 2), 'medium':(6.5, 4), 'large':(9, 6.5)}
+
+    # If name is invalid throw an error
+    if size not in sizes.keys():
+        raise Exception("Size must be one of 'small', 'medium', or 'large'")
+
+    return plt.figure(figsize=sizes[size])
+
+
+def save(filename, dpi):
+    '''
+    Save a plot using standard Brookings DPI values
+    '''
+    dpi_dict = {"retina": 320, "print": 300, "screen": 72}
+
+    # If name is invalid throw an error
+    if dpi not in dpi_dict.keys():
+        raise Exception("DPI must be one of 'retina', 'print', or 'screen'")
+    
+    plt.savefig(filename, dpi=dpi_dict[dpi])
