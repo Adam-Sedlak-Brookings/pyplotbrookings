@@ -10,30 +10,30 @@ import warnings
 
 
 palettes = {
-    'brand1': ('#FF9E1B', '#8AC6FF', '#003A79'),
-    'brand2': ('#D0D3D4', '#FF9E1B', '#003A79'),
-    'analogous1': ('#8AC6FF', '#003A79'),
-    'analogous2': ('#3EB2C6', '#003A79'),
-    'contrasting1': ('#FF9E1B', '#003A79'),
-    'contrasting2': ('#F5CC00', '#003A79'),
-    'semantic1': ('#F75C57', '#59C6DA'),
-    'semantic2': ('#E0BB00', '#A00D11', '#1C8090'),
-    'semantic3': ('#FFDD00', '#F75C57', '#59C6DA'),
-    'pos_neg1': ('#CD1A1C', '#5CA632'),
-    'pos_neg2': ('#CD1A1C', '#F5CC00', '#5CA632'),
-    'political1': ('#ED3A35', '#1479BB'),
-    'political2': ('#F98B83', '#5AADF6'),
-    'political3': ('#E0BB00', '#ED3A35', '#1479BB'),
-    'political4': ('#FFE926', '#F98B83', '#5AADF6'),
-    'categorical': ('#9e0d12ff', '#de60a1ff', '#f5cc05ff',
-                    '#fd9d1fff', '#00649fff', '#2599adff'),
-    'sequential1': ('#bcdefbff', '#87c4feff', '#56adf6ff',
-                    '#2e97eaff', '#1c8ad6ff', '#0f78baff', '#00649fff'),
-    'sequential2': ('#fce829ff', '#b1dc44ff', '#6dc960ff',
-                    '#2bb275ff', '#009a80ff', '#008080ff', '#0d636fff'),
-    'diverging': ('#e02928ff', '#f07867ff', '#f6b5a9ff',
-                  '#efefefff', '#b1c5deff', '#739fceff', '#0f78baff'),
-    'misc': ('#F5CC00', '#3EB2C6', '#003A79')
+    'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
+    'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
+    'analogous1': ('#003A79', '#8AC6FF'),
+    'analogous2': ('#003A79', '#3EB2C6'),
+    'contrasting1': ('#003A79', '#FF9E1B'),
+    'contrasting2': ('#003A79', '#F5CC00'),
+    'semantic1': ('#59C6DA', '#F75C57'),
+    'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
+    'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
+    'pos_neg1': ('#5CA632', '#CD1A1C'),
+    'pos_neg2': ('#5CA632', '#F5CC00', '#CD1A1C'),
+    'political1': ('#1479BB', '#ED3A35'),
+    'political2': ('#5AADF6', '#F98B83'),
+    'political3': ('#1479BB', '#ED3A35','#E0BB00'),
+    'political4': ('#5AADF6', '#F98B83', '#FFE926'),
+    'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
+                    '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
+    'sequential1': ('#00649fff', '#0f78baff', '#1c8ad6ff',
+                    '#2e97eaff', '#56adf6ff', '#87c4feff', '#bcdefbff'),
+    'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
+                    '#6dc960ff', '#b1dc44ff', '#fce829ff'),
+    'diverging':('#0f78baff', '#739fceff', '#b1c5deff',
+                '#efefefff', '#f6b5a9ff', '#f07867ff', '#e02928ff'),
+    'misc': ('#3EB2C6', '#003A79', '#F5CC00')
 }
 
 extended_palettes = {
@@ -82,7 +82,7 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.right': False,
         'axes.spines.top': False,
         # Set default cycler
-        'axes.prop_cycle': mpl.cycler(color=palettes['brand1']),
+        'axes.prop_cycle': mpl.cycler(color=palettes['sequential2']),
         'image.cmap': get_cmap('brand blue'),
 
         'figure.figsize': (8, 4.5),
@@ -108,7 +108,7 @@ def set_theme(font_size=14, line_width=1.4, web=False):
 
 
 def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
-              title_pad=0, source_pad=0, text_pad=0, x_offset=None, src_note_gap=0):
+              title_pad=0, source_pad=0, text_pad=0, x_offset=0, src_note_gap=0):
     '''
     Adds titles and foot notes to the current figure.
 
@@ -143,6 +143,9 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
     # Get the font size
     font_size = mpl.rcParams['font.size']
 
+    # Extra additional space to add if using Roboto font
+    space = int(mpl.rcParams['font.family'][0] == 'Roboto')
+
     # y value origin for titles
     title_0 = 0.95 + title_pad/100
     # x value origin for source and note text
@@ -152,12 +155,6 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
 
     # Initialize offsets for spacing figure titles apart
     top_offset, bottom_offset = 0, 0
-
-    # If there is no specified x_offset parse the figures y axis
-    # labels for the longest string and shift text as needed
-    if x_offset is None:
-        y_labels = plt.gca().get_yticklabels()
-        x_offset = -max([len(s.get_text()) for s in y_labels]) / 140
 
     if subtitle:
         plt.figtext(0.05+x_offset, title_0, subtitle, size=font_size)
@@ -178,14 +175,21 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
                     size=0.8*font_size, color='#003A79', weight='light')
 
     if source:
+        # Add  "Source:" in bold 
         plt.figtext(0.05+x_offset, source_0,
-                    r"$\bf{Source:}$ " + source, size=0.8*font_size, color="#666666")
+                    "Source:", size=0.8*font_size, color="#666666", weight='bold')
+        # Add the source text
+        plt.figtext(0.05+x_offset, source_0,
+                    " "*(14+space) + source, size=0.8*font_size, color="#666666")
         # Increment the notes vertical offset if text was added
         bottom_offset += font_size * text_pad * 0.8 + src_note_gap
 
     if notes:
         plt.figtext(0.05+x_offset, source_0 - bottom_offset,
-                    r"$\bf{Notes:}$ " + notes, size=0.8*font_size, color="#666666")
+                    "Notes:", size=0.8*font_size, color="#666666", weight='bold')
+
+        plt.figtext(0.05+x_offset, source_0 - bottom_offset,
+                    " "*(12+space) + notes, size=0.8*font_size, color="#666666")
 
 
 def add_logo(logo_path, offsets=(0, 0), scale=0.25):
@@ -268,14 +272,14 @@ def get_cmap(name, reverse=False):
     reverse (bool): If the color map should be reversed
     '''
     # Valid color palettes from ggbrookings palette 
-    gg_palettes = ['diverging', 'sequential1', 'sequential2', 'political1', 
-            'political2', 'contrasting1', 'contrasting2']
+    gg_palettes = ['diverging', 'sequential1', 'sequential2', 'political2']
 
     # All valid color maps
     valid_palettes = gg_palettes + list(extended_palettes.keys())
     # If name is invalid throw an error
     if name not in valid_palettes:
-        raise Exception('No such palette "' + name + '"  Try one of the following: ' + str(valid_palettes))
+        raise Exception('No such palette "' + name + '". Note not all palettes are designed to be color maps.'
+        + ' Try one of the following: ' + str(valid_palettes))
 
     # Get the colors from the correct dictionary
     if name in gg_palettes:
@@ -399,7 +403,6 @@ def view_palette(name):
     k = 0
     for i in range(data.shape[0]):
         for j in range(data.shape[1]):
-            
             
             # If the palette is white breakout of labeling the colors
             if k >= len(palette):
