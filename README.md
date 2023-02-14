@@ -2,8 +2,8 @@
 
 ## !!Known Bugs (to be fixed)!!
 * Exporting figures has cropping issues
-* Adding tiles still have centering issues. Need to fix this function (may split into several function) and add a notes pad.
-* Set pallet cmap is overwritting cycler, will remove setting a default colormap
+* Adding titles still has centering issues. Need to fix this function (may split into several function) and add a notes pad.
+* Set cmap is overwritting cycler, will remove setting a default colormap
 
 ## Overview
 
