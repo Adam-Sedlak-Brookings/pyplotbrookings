@@ -31,6 +31,8 @@ The `pyplotbrookings` package has a few simple user facing functions:
 
 -   `add_title()` adds titles and subtitles to a plot that are consistent 
     with Brookings brand guidelines. 
+    
+-   `add_notes()` adds footnotes, such as notes and sources, to a figure.
 
 -   `add_logo()` adds a program/center logo to your plots after saving
     them. 
