@@ -82,7 +82,7 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.right': False,
         'axes.spines.top': False,
         # Set default cycler
-        'axes.prop_cycle': mpl.cycler(color=palettes['sequential2']),
+        'axes.prop_cycle': mpl.cycler(color=palettes['brand1']),
         'image.cmap': get_cmap('brand blue'),
 
         'figure.figsize': (8, 4.5),
@@ -107,10 +107,9 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         mpl.rcParams[key] = value
 
 
-def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
-              title_pad=0, source_pad=0, text_pad=0, x_offset=0, src_note_gap=0):
+def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0):
     '''
-    Adds titles and foot notes to the current figure.
+    Adds titles to the current figure.
 
     title (str): The title of the plot. Title should be short
 
@@ -119,77 +118,95 @@ def add_title(title=None, subtitle=None, tag=None, source=None, notes=None,
 
     tag (str): The figure name/number plotted above the titles
 
-    source (str): String citing any data sources used to create the figure.
-        Text is added to the bottom of the figure.
+    v_pad (float): Vertical padding, a number specifying additional amount of 
+        spacing to add between the top of the figure and the first title
 
-    notes (str): Any notes authors may wish to include at the bottom 
-        of the figure.
-
-    title_pad (float): Number specifying additional amount of spacing to add
-        between the top of the figure and first title
-
-    source_pad (float): Number specifying additional amount of spacing to add
-        between the bottom of the figure and the source text or notes
+    h_pad (float): Horizontal padding, the amount of additional space to offset 
+        the title text in the x direction (useful if y labels are long)
 
     text_pad (float): Number specifying additional amount of spacing to add
         between lines of text. May be necessary if a different figure size is used.
-
-    x_offset (float): The amount of additional space to offset the title and notes text
-        in the x direction (useful if y labels are long) 
-
-    src_note_gap (float): The additional amount of white space between the source 
-        text and the notes text.
     '''
     # Get the font size
     font_size = mpl.rcParams['font.size']
 
-    # Extra additional space to add if using Roboto font
-    space = int(mpl.rcParams['font.family'][0] == 'Roboto')
-
     # y value origin for titles
-    title_0 = 0.95 + title_pad/100
-    # x value origin for source and note text
-    source_0 = -font_size*0.006 - source_pad/100
+    y = 0.95 + v_pad/100
+    x = 0.05 - h_pad/100
+
     # Padding to use between titles
     text_pad = 0.0038 + text_pad/10000
 
-    # Initialize offsets for spacing figure titles apart
-    top_offset, bottom_offset = 0, 0
-
     if subtitle:
-        plt.figtext(0.05+x_offset, title_0, subtitle, size=font_size)
+        plt.figtext(x, y, subtitle, size=font_size)
         # Parse subtitle for the number of lines
         n_lines = len(subtitle.split('\n'))
         # Increment next titles vertical offset if text was added
-        top_offset += font_size * n_lines * text_pad
+        y += font_size * n_lines * text_pad
 
     if title:
-        plt.figtext(0.05+x_offset, title_0+top_offset, title,
+        plt.figtext(x, y, title,
                     size=1.2*font_size, color='#003A79', weight='bold')
         # Increment next titles vertical offset if text was added
-        top_offset += font_size * text_pad * 1.2
+        y += font_size * text_pad * 1.2
 
     if tag:
-        plt.figtext(0.05+x_offset, title_0+top_offset, tag,
+        plt.figtext(x, y, tag,
                     # Increment next titles vertical offset if text was added
                     size=0.8*font_size, color='#003A79', weight='light')
 
-    if source:
-        # Add  "Source:" in bold 
-        plt.figtext(0.05+x_offset, source_0,
-                    "Source:", size=0.8*font_size, color="#666666", weight='bold')
-        # Add the source text
-        plt.figtext(0.05+x_offset, source_0,
-                    " "*(14+space) + source, size=0.8*font_size, color="#666666")
-        # Increment the notes vertical offset if text was added
-        bottom_offset += font_size * text_pad * 0.8 + src_note_gap
 
-    if notes:
-        plt.figtext(0.05+x_offset, source_0 - bottom_offset,
-                    "Notes:", size=0.8*font_size, color="#666666", weight='bold')
+def add_notes(*args, v_pad=0, h_pad=0, text_pad=0):
+    '''
+    Adds footnotes to the current figure.
 
-        plt.figtext(0.05+x_offset, source_0 - bottom_offset,
-                    " "*(12+space) + notes, size=0.8*font_size, color="#666666")
+    *args (str): String arguments containing text to place at the bottom of 
+        the figure. Any text before the first colon will be bolded
+
+    v_pad (float): Vertical padding, a number specifying additional amount of
+        spacing to add between the bottom of the figure and the first note
+
+    h_pad (float): Horizontal padding, the amount of additional space to offset 
+        the notes text in the x direction (useful if y labels are long)
+
+    text_pad (float): Number specifying additional amount of spacing to add
+        between lines of text. May be necessary if a different figure size is used.
+    '''
+    # Get the font size
+    font_size = mpl.rcParams['font.size']  
+
+    # x and y values for footnote text
+    y = 0 - v_pad/100
+    x = 0.05 - h_pad/100
+    
+    # Padding to use between text
+    text_pad = 0.0038 + text_pad/10000
+
+    for text in args:
+        # If there is a colon bold the text prior to the colon
+        if ":" in text:
+            bold_text = text.split(":")[0] + ":"
+            text = ":".join(text.split(":")[1:])
+        else:
+            bold_text = ''
+
+        # Add any bold text to the beginning of the footnote text
+        plt.figtext(x, y,
+                    bold_text, size=0.8*font_size, color="#666666", weight='bold', va='top')
+        
+        # The amount of white space to add to non bold text
+        n_space = len(bold_text)*2
+        
+        # Add the non bold text to the bottom of the figure
+        plt.figtext(x, y,
+                    " "*n_space + text, size=0.8*font_size, color="#666666", va='top')
+        
+        # Parse text for the number of lines
+        n_lines = len(text.split('\n'))
+
+        # Increment the offset for the next set of text
+        y -= font_size * text_pad * (0.9* n_lines) * 0.8 + 0.01
+
 
 
 def add_logo(logo_path, offsets=(0, 0), scale=0.25):
@@ -435,27 +452,38 @@ def import_roboto():
     mpl.rcParams['font.family'] = 'Roboto'
 
 
-def figure(size):
+def figure(size, **kwargs):
     '''
-    Create a figure using one of the standard Brookings sizes
+    Create a figure using one of the standard Brookings sizes (small, medium, or large).
+    Keyword arguments can be passed to pyplots plt.figure() function.
     '''
-    sizes = {'small': (3.25, 2), 'medium':(6.5, 4), 'large':(9, 6.5)}
+    if type(size) is str:
+        sizes = {'small': (3.25, 2), 'medium':(6.5, 4), 'large':(9, 6.5)}
 
-    # If name is invalid throw an error
-    if size not in sizes.keys():
-        raise Exception("Size must be one of 'small', 'medium', or 'large'")
+        # If name is invalid throw an error
+        if size not in sizes.keys():
+            raise Exception("Size must be one of 'small', 'medium', or 'large'")
 
-    return plt.figure(figsize=sizes[size])
+        size = sizes[size]
+
+    return plt.figure(figsize=sizes, **kwargs)
 
 
-def save(filename, dpi):
+def save(filename, dpi=None, **kwargs):
     '''
-    Save a plot using standard Brookings DPI values
+    Save a plot using standard Brookings DPI values (retina, print, screen)
+    Keyword arguments can be passed to pyplots plt.savefig() function.
     '''
-    dpi_dict = {"retina": 320, "print": 300, "screen": 72}
+    if not dpi:
+        dpi = 'figure'
 
-    # If name is invalid throw an error
-    if dpi not in dpi_dict.keys():
-        raise Exception("DPI must be one of 'retina', 'print', or 'screen'")
+    elif type(dpi) is str:
+        dpi_dict = {"retina": 320, "print": 300, "screen": 72}
+
+        # If name is invalid throw an error
+        if dpi not in dpi_dict.keys():
+            raise Exception("DPI must be one of 'retina', 'print', or 'screen'")
+
+        dpi = dpi_dict[dpi]
     
-    plt.savefig(filename, dpi=dpi_dict[dpi])
+    plt.savefig(filename, dpi=dpi, bbox_inches='tight', **kwargs)
