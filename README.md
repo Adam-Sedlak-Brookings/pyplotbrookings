@@ -1,9 +1,5 @@
 # pyplotbrookings <img src="figures/logo.png" align="right" width="120"/>
 
-## !!Known Bugs (to be fixed)!!
-* Exporting figures has cropping issues
-* Adding titles still has centering issues. Need to fix this function (may split into several function) and add a notes pad.
-* Set cmap is overwritting cycler, will remove setting a default colormap
 
 ## Overview
 
@@ -61,3 +57,6 @@ used directly but **only** for lookup and **not** assignment.
 ## Examples
 
 Examples can be found in the attached Jupyter Notebook.
+
+## Known Bugs
+* None (as of now...)
