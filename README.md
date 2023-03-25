@@ -1,6 +1,5 @@
 # pyplotbrookings <img src="figures/logo.png" align="right" width="120"/>
 
-
 ## Overview
 
 `pyplotbrookings` is a `matplotlib` extension which implements the Brookings
@@ -31,8 +30,6 @@ The `pyplotbrookings` package has a few simple user facing functions:
 
 -   `add_title()` adds titles and subtitles to a plot that are consistent 
     with Brookings brand guidelines. 
-    
--   `add_notes()` adds footnotes, such as notes and sources, to a figure.
 
 -   `add_logo()` adds a program/center logo to your plots after saving
     them. 
@@ -59,6 +56,3 @@ used directly but **only** for lookup and **not** assignment.
 ## Examples
 
 Examples can be found in the attached Jupyter Notebook.
-
-## Known Bugs
-* None (as of now...)
