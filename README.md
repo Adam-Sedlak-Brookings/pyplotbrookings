@@ -9,11 +9,10 @@ an R extension for `ggplot`.
 
 ## Installation
 
-Currently `pyplotbrookings` is not an official python package. If you would like to 
-demo this module please download this repository and import it into a python script.
-The current alias for for `pyplotbrookings` is `ppb`. For example,
+Currently `pyplotbrookings` now a python package, it can be downloaded with `pip`!
+The accepted alias for `pyplotbrookings` is `ppb`. For example,
 ```python
-import pyplotbrookings as ppb
+import pyplotbrookings.pyplotbrookings as ppb
 ```
 
 
@@ -34,7 +33,7 @@ The `pyplotbrookings` package has a few simple user facing functions:
 -   `add_logo()` adds a program/center logo to your plots after saving
     them. 
 
--   `get_camp()` returns a continuous palette (or color map) using one of
+-   `get_cmap()` returns a continuous palette (or color map) using one of
     the color Brookings color palettes.
 
 -   `view_palette()` helper function that previews a color palette showing 
