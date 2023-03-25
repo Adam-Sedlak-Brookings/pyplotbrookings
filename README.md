@@ -9,7 +9,7 @@ an R extension for `ggplot`.
 
 ## Installation
 
-Currently `pyplotbrookings` now a python package, it can be downloaded with `pip`!
+`pyplotbrookings` is now a python package and can be downloaded with `pip`!
 The accepted alias for `pyplotbrookings` is `ppb`. For example,
 ```python
 import pyplotbrookings.pyplotbrookings as ppb
