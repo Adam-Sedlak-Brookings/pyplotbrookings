@@ -9,9 +9,9 @@ an R extension for `ggplot`.
 
 ## Installation
 
-`pyplotbrookings` is now a python package! It downloaded from PyPI with `pip` (https://pypi.org/project/pyplotbrookings/0.1.0/)!
+`pyplotbrookings` is now a python package! It downloaded from PyPI with `pip` (https://pypi.org/project/pyplotbrookings/)!
 ```
-pip install pyplotbrookings==0.1.0
+pip install pyplotbrookings
 ```
 
 The accepted alias for `pyplotbrookings` is `ppb`. For example,
@@ -31,6 +31,7 @@ The `pyplotbrookings` package has a few simple user facing functions:
 
 -   `set_palette()` sets the `matplotlib` color cycler to one of
     the Brookings brand palettes.
+    - Valid color palettes are: `default`, `brand1`, `brand2`, `analogous1`, `analogous2`, `contrasting1`, `contrasting2`, `semantic1`, `semantic2`, `semantic3`, `pos_neg1`, `pos_neg2`, `political1`, `political2` `political3`, `political4`, `categorical`, `sequential1`, `sequential2`, `diverging`, `misc`, `brand blue`, `vivid blue`, `teal`, `green`, `yellow`, `orange`, `red`, `magenta`, `purple`
 
 -   `get_cmap()` returns a continuous palette (or color map) using one of
     the color Brookings color palettes.
@@ -46,6 +47,8 @@ The `pyplotbrookings` package has a few simple user facing functions:
     with Brookings brand guidelines.
 
 -   `add_logo()` adds a program/center logo to a figure.
+    - You can add a logo using a local path or use one of the logos that comes with `pyplotbrookings`.
+    - The following logos are included with pyplotbrookings: `bc` (Brown Center), `bi` (Bass Initiative on Innovation and Placemaking), `brookings` (Brookings Institution), `cc` (China Center), `ccf` (Center on Children and Families), `ceaps` (Center for East Asia Policy Studies), `cepm` (Center for Effective Policy Management), `chp` (Center for Health Policy), `cmep` (Center for Middle Eastern Policy), `crm` (Center on Regulation and Markets), `csd` (Center for Sustainable Development), `cti` (Center for Technology Innovation), `cue` (Center for Universal Education), `cuse` (Center on United States and Europe), `es` (Economic Studies), `fp` (Foreign Policy), `global` (Global Studies), `gs` (Governance Studies), `hc` (Hutchins Center), `metro` (Metropolitan Policy Studies), `thp` (The Hamilton Project).
 
 -   `figure()` creates a `matplotlib` figure in one of the standard 
     Brookings sizes.
@@ -53,6 +56,9 @@ The `pyplotbrookings` package has a few simple user facing functions:
 -   `save()` saves a figure in the Brookings advised dpi values depending
      on content type.
 
+
+## Contact
+To report any bugs or discuss contributing to this package please contact Adam Sedlak or Valerie Wirtschafter.
 
 ## Examples
 Let's create a figure plot using `pyplotbrookings`. First we'll need some data
@@ -95,6 +101,8 @@ ppb.add_notes('Source: Palmer Station Antarctica LTER',
 ppb.add_logo('hc')
 ```
 
+![alt text](figures/Figure1A.png)
+
 `pyplotbrookings` is designed to work with many different plots. Let's try creating a scatter plot that uses a colormap
 
 ```python
@@ -125,6 +133,7 @@ ppb.add_notes('Source: Palmer Station Antarctica LTER',
 # Adding a CRM logo
 ppb.add_logo('crm', scale=0.35, offsets=(-0.1, 0))
 ```
+![alt text](figures/Figure2.png)
 
 We could also create a box plot. Note that titles and notes auto-align to the left margin of the figure.
 ```python
@@ -148,3 +157,4 @@ plt.ylabel('Island')
 
 ppb.add_logo('crm', scale=0.35, offsets=(-0.1, 0))
 ```
+![alt text](figures/Figure3.png)
