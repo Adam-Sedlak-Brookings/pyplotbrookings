@@ -6,46 +6,6 @@ import matplotlib.colors
 from matplotlib import font_manager
 import numpy as np
 import os
-import warnings
-
-palettes = {
-    'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
-    'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
-    'analogous1': ('#003A79', '#8AC6FF'),
-    'analogous2': ('#003A79', '#3EB2C6'),
-    'contrasting1': ('#003A79', '#FF9E1B'),
-    'contrasting2': ('#003A79', '#F5CC00'),
-    'semantic1': ('#59C6DA', '#F75C57'),
-    'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
-    'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
-    'pos_neg1': ('#5CA632', '#CD1A1C'),
-    'pos_neg2': ('#5CA632', '#F5CC00', '#CD1A1C'),
-    'political1': ('#1479BB', '#ED3A35'),
-    'political2': ('#5AADF6', '#F98B83'),
-    'political3': ('#1479BB', '#ED3A35','#E0BB00'),
-    'political4': ('#5AADF6', '#F98B83', '#FFE926'),
-    'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
-                    '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
-    'sequential1': ('#00649fff', '#0f78baff', '#1c8ad6ff',
-                    '#2e97eaff', '#56adf6ff', '#87c4feff', '#bcdefbff'),
-    'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
-                    '#6dc960ff', '#b1dc44ff', '#fce829ff'),
-    'diverging':('#0f78baff', '#739fceff', '#b1c5deff',
-                '#efefefff', '#f6b5a9ff', '#f07867ff', '#e02928ff'),
-    'misc': ('#3EB2C6', '#003A79', '#F5CC00')
-}
-
-extended_palettes = {
-    'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
-    'vivid blue': ('#023147', '#004B6E', '#00649F', '#1479BB', '#1E8AD6', '#3398EA', '#5AADF6', '#8AC6FF', '#BFDFFC'),
-    'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
-    'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
-    'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F5CC00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
-    'orange': ('#663205', '#994B08', '#B85B0A', '#F26D00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
-    'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
-    'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
-    'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC')
-}
 
 
 def set_theme(font_size=14, line_width=1.4, web=False):
@@ -67,6 +27,13 @@ def set_theme(font_size=14, line_width=1.4, web=False):
     # Setting the background color
     background_color = '#FAFAFA' if web else '#FFFFFF'
 
+    # Setting up Roboto font
+    cwd = os.path.join(os.path.dirname(__file__), 'fonts')
+    font_files = font_manager.findSystemFonts(fontpaths=cwd, fontext="ttf")
+
+    for font_file in font_files:
+        font_manager.fontManager.addfont(font_file)
+
     # Dictionary of style features to set
     style_dict = {
         'axes.axisbelow': True,  # Place gride lines behind the plot
@@ -80,12 +47,13 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.left': False,
         'axes.spines.right': False,
         'axes.spines.top': False,
-        # Set default cycler
-        'axes.prop_cycle': mpl.cycler(color=palettes['brand1']),
-        'image.cmap': get_cmap('brand blue'),
+        # Set default palettes
+        'axes.prop_cycle': mpl.cycler(color=get_palette('default')),
+        'image.cmap': get_cmap('sequential2'),
 
         'figure.figsize': (8, 4.5),
         'font.size': font_size,
+        'font.family': 'Roboto',
 
         'grid.color': '#CCCCCC',
         'grid.linestyle': (0, (1, 4)),
@@ -104,6 +72,74 @@ def set_theme(font_size=14, line_width=1.4, web=False):
     # Apply all styles
     for key, value in style_dict.items():
         mpl.rcParams[key] = value
+
+
+def get_palette(name, list_supported=False):
+    '''
+    Given a palette name returns a tuple of hexcolor
+    palette colors
+
+    name (str): The palette name.
+
+    list_supported (bool): If true list all supported palette 
+        names (see below).
+
+    Complete list of valid palette names:
+        'default', 'brand1', 'brand2', 'analogous1', 'analogous2', 'contrasting1', 'contrasting2', 
+        'semantic1', 'semantic2', 'semantic3', 'pos_neg1', 'pos_neg2', 'political1', 'political2', 
+        'political3', 'political4', 'categorical', 'sequential1', 'sequential2', 'diverging', 'misc',
+        'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple'
+    '''
+
+    palettes = {
+        'default': ('#003A79', '#8AC6FF', '#FF9E1B', '#D0D3D4', '#F5CC00', '#3EB2C6'),
+        'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
+        'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
+        'analogous1': ('#003A79', '#8AC6FF'),
+        'analogous2': ('#003A79', '#3EB2C6'),
+        'contrasting1': ('#003A79', '#FF9E1B'),
+        'contrasting2': ('#003A79', '#F5CC00'),
+        'semantic1': ('#59C6DA', '#F75C57'),
+        'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
+        'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
+        'pos_neg1': ('#5CA632', '#CD1A1C'),
+        'pos_neg2': ('#5CA632', '#F5CC00', '#CD1A1C'),
+        'political1': ('#1479BB', '#ED3A35'),
+        'political2': ('#5AADF6', '#F98B83'),
+        'political3': ('#1479BB', '#ED3A35','#E0BB00'),
+        'political4': ('#5AADF6', '#F98B83', '#FFE926'),
+        'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
+                        '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
+        'sequential1': ('#00649fff', '#0f78baff', '#1c8ad6ff',
+                        '#2e97eaff', '#56adf6ff', '#87c4feff', '#bcdefbff'),
+        'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
+                        '#6dc960ff', '#b1dc44ff', '#fce829ff'),
+        'diverging':('#0f78baff', '#739fceff', '#b1c5deff',
+                    '#efefefff', '#f6b5a9ff', '#f07867ff', '#e02928ff'),
+        'misc': ('#3EB2C6', '#003A79', '#F5CC00'),
+        # Extended palettes
+        'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
+        'vivid blue': ('#023147', '#004B6E', '#00649F', '#1479BB', '#1E8AD6', '#3398EA', '#5AADF6', '#8AC6FF', '#BFDFFC'),
+        'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
+        'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
+        'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F5CC00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
+        'orange': ('#663205', '#994B08', '#B85B0A', '#F26D00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
+        'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
+        'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
+        'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC')
+    }
+    supported_palettes = list(palettes.keys())
+
+    # Return all palette names if 
+    if list_supported:
+        return supported_palettes
+    
+    if name not in supported_palettes:
+        raise Exception(
+            f'"{name}" is not a valid color palette. \
+                Try one of the following: {supported_palettes}')
+    
+    return palettes[name]
 
 
 def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0):
@@ -221,7 +257,7 @@ def add_notes(*args, v_pad=0, h_pad=0, text_pad=0):
         y = get_coords('bottom')
 
 
-def add_logo(logo_path, offsets=(0, 0), scale=0.25):
+def add_logo(logo_path, offsets=(0, 0), scale=0.25, list_supported=False):
     '''
     Adds a logo to the bottom right of a figure
 
@@ -233,6 +269,9 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25):
         of the figure size)
 
     scale (float): Scale factor to set the logo size
+
+    list_supported (bool): If true return a list of all valid logo 
+        abbreviations (see below)
 
     Complete list of supported logos abbreviations:
         bc: Brown Center
@@ -257,14 +296,18 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25):
         metro: Metropolitan Policy Studies
         thp: The Hamilton Project
     '''
+    # List of supported logos
+    supported_logos = ["bc", "bi", "brookings", "cc", "ccf", "ceaps", "cepm", "chp", "cmep", "crm", "csd",
+                       "cti", "cue", "cuse", "es", "fp", "global", "gs", "hc", "metro", "thp"]
+    
+    if list_supported:
+        return supported_logos
+
+    # Set up the subplot coordinates
     dx, dy = offsets
     font_size = mpl.rcParams['font.size']
     # Map of logo position names to coordinates
     logo_loc = [0.65+dx, -0.12+dy-font_size*0.006, scale, 0.2]
-
-    # List of supported logos
-    supported_logos = ["bc", "bi", "brookings", "cc", "ccf", "ceaps", "cepm", "chp", "cmep", "crm", "csd",
-                       "cti", "cue", "cuse", "es", "fp", "global", "gs", "hc", "metro", "thp"]
 
     # Updating string to directory path if using a supported logo
     if logo_path in supported_logos:
@@ -277,8 +320,8 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25):
 
     except FileNotFoundError:
         # Throw error listing valid logo names
-        raise Exception('No such file or directory: "' + str(logo_path)
-                        + '" Check your path or try one of the following: ' + str(supported_logos))
+        raise Exception(f'No such file or directory: " {logo_path}. Check your \
+                        path or try one of the following: {supported_logos}')
 
     # Get current figure
     fig = plt.gcf()
@@ -292,28 +335,15 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25):
 
 def get_cmap(name, reverse=False):
     '''
-    Given a color map name returns a Brookings theme color maps.
+    Given a palette name returns a Brookings theme colormap. 
+    Note not all palettes (e.g., brand 1) should be used as colormaps.
 
     name (str): Name of the color map from either the color palette or 
         extended color palette.
 
     reverse (bool): If the color map should be reversed
     '''
-    # Valid color palettes from ggbrookings palette 
-    gg_palettes = ['diverging', 'sequential1', 'sequential2', 'political2']
-
-    # All valid color maps
-    valid_palettes = gg_palettes + list(extended_palettes.keys())
-    # If name is invalid throw an error
-    if name not in valid_palettes:
-        raise Exception('No such palette "' + name + '". Note not all palettes are designed to be color maps.'
-        + ' Try one of the following: ' + str(valid_palettes))
-
-    # Get the colors from the correct dictionary
-    if name in gg_palettes:
-        colors = palettes[name]
-    else:
-        colors = extended_palettes[name]
+    colors = get_palette(name)
 
     # Reverse colors if needed
     if reverse:
@@ -334,20 +364,7 @@ def set_palette(name, ax=None, reverse=False):
 
     reverse (bool): If the color palette should be reversed
     '''
-
-    # Check if there's a key for the user palette name
-    try:
-        palette = palettes[name]
-
-    # Throw error with all palette names if there's no key value pair
-    except KeyError:
-        raise Exception(
-            '"' + str(name)+'" is not a valid color palette. Try one of the following: ' + str(list(palettes.keys())))
-
-    # pos_neg color palettes are not good for RG color blindness
-    if name in ['pos_neg1', 'pos_neg2']:
-        warnings.warn("This palette is accessible but NOT contrasting for people with color red-green blindness.")
-    
+    palette = get_palette(name)
     # Reverse the palette if specified
     if reverse:
             palette = palette[::-1]
@@ -362,53 +379,42 @@ def set_palette(name, ax=None, reverse=False):
     ax.set_prop_cycle(palette_cycler)
 
 
-def text_color(hexcolor):
-    '''
-    Returns recommended color of text (either black or white) 
-    to use with the given hexcolor as a background color. Color
-    selection is adherent to W3C guidelines. 
-    
-    hexcolor (str): String of a hexidecimal color
-    
-    @Source: Mark Ransom (https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color)
-    '''
-    # Convert hexcolor code to RGB
-    rgb_color = list(int(hexcolor[i:i+2], 16) for i in (1, 3, 5))
-    
-    # Adjusting RGB values
-    rgb_new = []
-    for c in rgb_color:
-        c = c / 255.0
-        if c <= 0.04045:
-            c = c/12.92 
-        else:
-            c = ((c+0.055)/1.055) ** 2.4
-        rgb_new.append(c)
-    # Getting color luminosity
-    L = 0.2126 * rgb_new[0] + 0.7152 * rgb_new[1] + 0.0722 * rgb_new[2]
-    
-    # Return black or white depending on color luminosity
-    return '#000000' if L > 0.179 else '#FFFFFF'
-
-
 def view_palette(name):
     '''
     Given a color palette (base or extended) creates a preview of the palette
     '''
 
-    # All valid color maps
-    valid_palettes = list(palettes.keys()) + list(extended_palettes.keys())
-    
-    # If name is invalid throw an error
-    if name not in valid_palettes:
-        raise Exception('No such palette "' + name + '"  Try one of the following: ' + str(valid_palettes))
-    
-    # Otherwise get the correct color
-    if name in palettes.keys():
-        palette = palettes[name]
+    def text_color(hexcolor):
+        '''
+        Returns recommended color of text (either black or white) 
+        to use with the given hexcolor as a background color. Color
+        selection is adherent to W3C guidelines. 
         
-    elif name in extended_palettes.keys():
-        palette = extended_palettes[name]
+        hexcolor (str): String of a hexidecimal color
+        
+        @Source: Mark Ransom (https://stackoverflow.com/questions/3942878/
+        how-to-decide-font-color-in-white-or-black-depending-on-background-color)
+        '''
+        # Convert hexcolor code to RGB
+        rgb_color = list(int(hexcolor[i:i+2], 16) for i in (1, 3, 5))
+        
+        # Adjusting RGB values
+        rgb_new = []
+        for c in rgb_color:
+            c = c / 255.0
+            if c <= 0.04045:
+                c = c/12.92 
+            else:
+                c = ((c+0.055)/1.055) ** 2.4
+            rgb_new.append(c)
+        # Getting color luminosity
+        L = 0.2126 * rgb_new[0] + 0.7152 * rgb_new[1] + 0.0722 * rgb_new[2]
+        
+        # Return black or white depending on color luminosity
+        return '#000000' if L > 0.179 else '#FFFFFF'
+
+    # All valid color maps
+    palette = get_palette(name)
     
     # Cast color to an array
     palette = np.array(palette)
@@ -450,19 +456,6 @@ def view_palette(name):
     plt.show()
 
 
-def import_roboto():
-    '''
-    Import the Roboto font and add it as the default font family
-    '''
-    cwd = os.path.join(os.path.dirname(__file__), 'fonts')
-    font_files = font_manager.findSystemFonts(fontpaths=cwd, fontext="ttf")
-
-    for font_file in font_files:
-        font_manager.fontManager.addfont(font_file)
-        
-    mpl.rcParams['font.family'] = 'Roboto'
-
-
 def figure(size, **kwargs):
     '''
     Create a figure using one of the standard Brookings sizes (small, medium, or large).
@@ -498,6 +491,7 @@ def save(filename, dpi=None, **kwargs):
         dpi = dpi_dict[dpi]
     
     plt.savefig(filename, dpi=dpi, bbox_inches='tight', **kwargs)
+
 
 def get_coords(loc, obj=None):
     '''
