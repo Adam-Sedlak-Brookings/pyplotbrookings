@@ -329,7 +329,7 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25, list_supported=False):
     ax = fig.add_axes(logo_loc, zorder=1)
 
     # Add logo to new axis and turn off axis labeling
-    ax.imshow(logo)
+    ax.imshow(logo, cmap='viridis')
     ax.axis('off')
 
 
