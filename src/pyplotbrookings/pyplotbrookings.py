@@ -6,7 +6,10 @@ import matplotlib.colors
 from matplotlib import font_manager
 import numpy as np
 import os
-
+# TODO: Finish adding new palettes
+# L----> optional, add color combiner? (maybe called make_palette())
+# TODO: Update doc strings of palette
+# TODO: New style guide does not use Roboto
 
 def set_theme(font_size=14, line_width=1.4, web=False):
     '''
@@ -48,12 +51,12 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.right': False,
         'axes.spines.top': False,
         # Set default palettes
-        'axes.prop_cycle': mpl.cycler(color=get_palette('default')),
-        'image.cmap': get_cmap('sequential2'),
+        'axes.prop_cycle': mpl.cycler(color=get_palette('6-color')),
+        'image.cmap': get_cmap('sequential (two hues)'),
 
         'figure.figsize': (8, 4.5),
         'font.size': font_size,
-        'font.family': 'Roboto',
+        'font.family': 'Roboto', 
 
         'grid.color': '#CCCCCC',
         'grid.linestyle': (0, (1, 4)),
@@ -89,44 +92,70 @@ def get_palette(name, list_supported=False):
         'semantic1', 'semantic2', 'semantic3', 'pos_neg1', 'pos_neg2', 'political1', 'political2', 
         'political3', 'political4', 'categorical', 'sequential1', 'sequential2', 'diverging', 'misc',
         'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple'
-    '''
+    '''    
+    # Named band colors
+    color = {
+        'brookings blue': '#003A70'
+        'orange 40': '#FF9E1B'
+        'orange 60': '#EF6A00'
+        'yellow 50': '#F2CD00'
+        'vivid blue 20': '#8BB8E8'
+        'vivid blue 70': '#0061A0'
+        'cool gray': '#B1B3B3'
+    }
 
     palettes = {
-        'default': ('#003A79', '#8AC6FF', '#FF9E1B', '#D0D3D4', '#F5CC00', '#3EB2C6'),
-        'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
-        'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
-        'analogous1': ('#003A79', '#8AC6FF'),
-        'analogous2': ('#003A79', '#3EB2C6'),
-        'contrasting1': ('#003A79', '#FF9E1B'),
-        'contrasting2': ('#003A79', '#F5CC00'),
-        'semantic1': ('#59C6DA', '#F75C57'),
-        'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
-        'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
-        'pos_neg1': ('#5CA632', '#CD1A1C'),
-        'pos_neg2': ('#5CA632', '#F5CC00', '#CD1A1C'),
-        'political1': ('#1479BB', '#ED3A35'),
-        'political2': ('#5AADF6', '#F98B83'),
-        'political3': ('#1479BB', '#ED3A35','#E0BB00'),
-        'political4': ('#5AADF6', '#F98B83', '#FFE926'),
-        'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
-                        '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
-        'sequential1': ('#00649fff', '#0f78baff', '#1c8ad6ff',
-                        '#2e97eaff', '#56adf6ff', '#87c4feff', '#bcdefbff'),
-        'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
-                        '#6dc960ff', '#b1dc44ff', '#fce829ff'),
-        'diverging':('#0f78baff', '#739fceff', '#b1c5deff',
-                    '#efefefff', '#f6b5a9ff', '#f07867ff', '#e02928ff'),
-        'misc': ('#3EB2C6', '#003A79', '#F5CC00'),
+        #'default': ('#003A79', '#8AC6FF', '#FF9E1B', '#D0D3D4', '#F5CC00', '#3EB2C6'),
+        #'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
+        #'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
+        #'analogous1': ('#003A79', '#8AC6FF'),
+        #'analogous2': ('#003A79', '#3EB2C6'),
+        #'contrasting1': ('#003A79', '#FF9E1B'),
+        #'contrasting2': ('#003A79', '#F5CC00'),
+        #'semantic1': ('#59C6DA', '#F75C57'),
+        #'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
+        #'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
+        'pos-neg A': ('#5CA632', '#CD1A1C'),
+        'pos-neg B': ('#5CA632', '#F5CC00', '#CD1A1C'),
+        'political A': ('#1479BB', '#ED3A35'),
+        'political B': ('#5AADF6', '#F98B83'),
+        'political C': ('#1479BB', '#ED3A35','#E0BB00'),
+        'political D': ('#5AADF6', '#F98B83', '#FFE926'),
+        #'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
+        #                '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
+        'sequential (single hue)': ('#00649f', '#0f78ba', '#1c8ad6',
+                        '#2e97ea', '#56adf6', '#87c4fe', '#bcdefb'),
+        'sequential (two hues)' : ('#00649f', '#2a7a8b', '#559077', '#80a662', '#aabd4e', '#d4d33a', '#ffe926')
+        #'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
+        #                '#6dc960ff', '#b1dc44ff', '#fce829ff'),
+        
+        'diverging':('#0f78ba', '#739fce', '#b1c5de',
+                    '#efefef', '#f6b5a9', '#f07867', '#e02928'),
+        #'misc': ('#3EB2C6', '#003A79', '#F5CC00'),
+
+        # Categorical
+        '1-color A': ('#003A70'),
+        '1-color B': ('#0061A0'),
+        '2-color A': ('#003A70', '#FF9E1B'),
+        '2-color B': ('#003A70', '#8BB8E8'),
+        '3-color A': ('#003A70', '#FF9E1B', '#8BB8E8'),
+        '3-color B': ('#003A70', '#FF9E1B', '#B1B3B3'),
+        '4-color A': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00'),
+        '4-color B': ('#003A70', '#FF9E1B', '#8BB8E8', '#B1B3B3'),
+        '5-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#B1B3B3'),
+        '6-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#EF6A00', '#B1B3B3')
+        
         # Extended palettes
         'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
-        'vivid blue': ('#023147', '#004B6E', '#00649F', '#1479BB', '#1E8AD6', '#3398EA', '#5AADF6', '#8AC6FF', '#BFDFFC'),
+        'vivid blue': ('#023147', '#004B6E', '#0061A0', '#1372BA', '#287EC9', '#418FDE', '#66ACED', '#8BB8E8', '#CAE1FA'),
         'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
         'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
-        'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F5CC00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
-        'orange': ('#663205', '#994B08', '#B85B0A', '#F26D00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
+        'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F2CD00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
+        'orange': ('#663205', '#994B08', '#B85B0A', '#EF6A00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
         'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
         'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
-        'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC')
+        'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC'),
+        'gray': ('191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2')
     }
     supported_palettes = list(palettes.keys())
 
