@@ -7,8 +7,6 @@ from matplotlib import font_manager
 import numpy as np
 import os
 
-# TODO: New style guide does not use Roboto
-
 _palettes = {
         # Categorical
         '1-color A': ('#003A70'),
@@ -49,7 +47,7 @@ _palettes = {
         'gray': ('191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
     }
 
-def set_theme(font_size=14, line_width=1.4, web=False):
+def set_theme(font_size=12, line_width=1.4, web=False):
     '''
     Sets matplotlib default style parameters to be consistent with
     the Brookings style. 
@@ -88,13 +86,20 @@ def set_theme(font_size=14, line_width=1.4, web=False):
         'axes.spines.left': False,
         'axes.spines.right': False,
         'axes.spines.top': False,
+        
+        # Setting label color to Gray 90
+        'text.color': '#191919',
+        'axes.labelcolor': '#191919',
+        'xtick.color': '#191919',
+        'ytick.color': '#191919',
+        
         # Set default palettes
         'axes.prop_cycle': mpl.cycler(color=get_palette('6-color')),
         'image.cmap': get_cmap('sequential (two hues)'),
 
         'figure.figsize': (8, 4.5),
         'font.size': font_size,
-        'font.family': 'Roboto', 
+        'font.family': 'Helvetica', 
 
         'grid.color': '#CCCCCC',
         'grid.linestyle': (0, (1, 4)),
@@ -218,32 +223,30 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0)
     # Font size to pad
     text_pad = (0.47 + text_pad/100) * font_size
     
+    # Add some blank space padding
+    plt.figtext(x, y, ' ', size=text_pad+8*text_pad)   
+
     if subtitle:
-        # Add some blank space padding
-        plt.figtext(x, y, ' ', size=text_pad)
-        # Add next title
         y = get_coords('top')
-        plt.figtext(x, y, subtitle, size=font_size)
+        plt.figtext(x, y, subtitle, size=0.833*font_size)
         # Increment next titles vertical offset if text was added
         y = get_coords('top')
-
-    if title:
-        plt.figtext(x, y, ' ', size=text_pad)
-        y = get_coords('top')
+        plt.figtext(x, y, ' ', size=1.5*text_pad)
         
-        plt.figtext(x, y, title,
-                    size=1.2*font_size, color='#003A79', weight='bold')
+    if title:    
         y = get_coords('top')
+        plt.figtext(x, y, title,
+                    size=font_size, weight='bold')
+        y = get_coords('top')
+        plt.figtext(x, y, ' ', size=2*font_size)
 
     if tag:
-        plt.figtext(x, y, ' ', size=text_pad)
-        
         y = get_coords('top')
-        plt.figtext(x, y, tag,
-                    size=0.8*font_size, color='#003A79', weight='light')
+        plt.figtext(x, y, tag.upper(),
+                    size=0.75*font_size, weight='light', color='#666666')
 
 
-def add_notes(*args, v_pad=0, h_pad=0, text_pad=0):
+def add_notes(*args, v_pad=-5, h_pad=0, text_pad=0):
     '''
     Adds footnotes to the current figure.
 
@@ -284,7 +287,7 @@ def add_notes(*args, v_pad=0, h_pad=0, text_pad=0):
 
         # Add any bold text to the beginning of the footnote text
         txt = plt.figtext(x, y,
-                    bold_text, size=0.8*font_size, color="#666666", weight='bold', va='top')
+                    bold_text, size=0.75*font_size, color="#666666", weight='bold', va='top')
         
         # If there are line feeds, add this extra text below the first line
         if '\n' in text:
@@ -293,13 +296,13 @@ def add_notes(*args, v_pad=0, h_pad=0, text_pad=0):
             # Main text is now just the first line
             text = text.splitlines()[0]
             plt.figtext(x, y,
-                    extra_text, size=0.8*font_size, color="#666666", va='top')
+                    extra_text, size=0.75*font_size, color="#666666", va='top')
         
         # off set in x direction from bold text on first line
         x_off = get_coords('right', obj=txt)
         # Add the non bold text to the bottom of the figure
         plt.figtext(x_off, y,
-                    text, size=0.8*font_size, color="#666666", va='top')
+                    text, size=0.75*font_size, color="#666666", va='top')
 
         # Increment the offset for the next set of text
         y = get_coords('bottom')
