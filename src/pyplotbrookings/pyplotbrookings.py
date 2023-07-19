@@ -6,10 +6,48 @@ import matplotlib.colors
 from matplotlib import font_manager
 import numpy as np
 import os
-# TODO: Finish adding new palettes
-# L----> optional, add color combiner? (maybe called make_palette())
-# TODO: Update doc strings of palette
+
 # TODO: New style guide does not use Roboto
+
+_palettes = {
+        # Categorical
+        '1-color A': ('#003A70'),
+        '1-color B': ('#0061A0'),
+        '2-color A': ('#003A70', '#FF9E1B'),
+        '2-color B': ('#003A70', '#8BB8E8'),
+        '3-color A': ('#003A70', '#FF9E1B', '#8BB8E8'),
+        '3-color B': ('#003A70', '#FF9E1B', '#B1B3B3'),
+        '4-color A': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00'),
+        '4-color B': ('#003A70', '#FF9E1B', '#8BB8E8', '#B1B3B3'),
+        '5-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#B1B3B3'),
+        '6-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#EF6A00', '#B1B3B3'),
+                
+        'sequential (single hue)': ('#00649f', '#0f78ba', '#1c8ad6',  '#2e97ea', '#56adf6', '#87c4fe', '#bcdefb'),
+        'sequential (two hues)' : ('#00649f', '#2a7a8b', '#559077', '#80a662', '#aabd4e', '#d4d33a', '#ffe926'),
+        'diverging': ('#ed3a35', '#ee7673', '#eeb3b1', '#efefef', '#adc9e2', '#6aa4d6', '#287ec9'),
+        'paired': ('#003A70', '#326295', '#EF6A00', '#FF9E1B', '#418FDE', '#8BB8E8', '#E0BB00', '#FFDD00', '#949494', '#B1B3B3'),
+        
+        # Additional palettes
+        'pos-neg A': ('#5CA632', '#CD1A1C'),
+        'pos-neg B': ('#5CA632', '#F5CC00', '#CD1A1C'),
+        
+        '2-political A': ('#ed3a35', '#287ec9'),
+        '2-political B': ('#ee7673', '#6aa4d6'),
+        '3-political A': ('#ed3a35', '#287ec9', '#f2cd00'),
+        '3-political B': ('#ee7673', '#6aa4d6', '#f1d850'),
+        
+        # Extended palettes
+        'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
+        'vivid blue': ('#023147', '#004B6E', '#0061A0', '#1372BA', '#287EC9', '#418FDE', '#66ACED', '#8BB8E8', '#CAE1FA'),
+        'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
+        'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
+        'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F2CD00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
+        'orange': ('#663205', '#994B08', '#B85B0A', '#EF6A00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
+        'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
+        'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
+        'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC'),
+        'gray': ('191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
+    }
 
 def set_theme(font_size=14, line_width=1.4, web=False):
     '''
@@ -88,76 +126,12 @@ def get_palette(name, list_supported=False):
         names (see below).
 
     Complete list of valid palette names:
-        'default', 'brand1', 'brand2', 'analogous1', 'analogous2', 'contrasting1', 'contrasting2', 
-        'semantic1', 'semantic2', 'semantic3', 'pos_neg1', 'pos_neg2', 'political1', 'political2', 
-        'political3', 'political4', 'categorical', 'sequential1', 'sequential2', 'diverging', 'misc',
-        'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple'
+        '1-color A', '1-color B', '2-color A', '2-color B', '3-color A', '3-color B', '4-color A',
+        '4-color B', '5-color', '6-color', 'sequential (single hue)', 'sequential (two hues)', 'diverging', 
+        'pos-neg A', 'pos-neg B', '2-political A', '2-political B', '3-political A', '3-political B', 
+        'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple', 'gray'
     '''    
-    # Named band colors
-    color = {
-        'brookings blue': '#003A70'
-        'orange 40': '#FF9E1B'
-        'orange 60': '#EF6A00'
-        'yellow 50': '#F2CD00'
-        'vivid blue 20': '#8BB8E8'
-        'vivid blue 70': '#0061A0'
-        'cool gray': '#B1B3B3'
-    }
-
-    palettes = {
-        #'default': ('#003A79', '#8AC6FF', '#FF9E1B', '#D0D3D4', '#F5CC00', '#3EB2C6'),
-        #'brand1': ('#003A79', '#8AC6FF', '#FF9E1B'),
-        #'brand2': ('#003A79', '#FF9E1B', '#D0D3D4'),
-        #'analogous1': ('#003A79', '#8AC6FF'),
-        #'analogous2': ('#003A79', '#3EB2C6'),
-        #'contrasting1': ('#003A79', '#FF9E1B'),
-        #'contrasting2': ('#003A79', '#F5CC00'),
-        #'semantic1': ('#59C6DA', '#F75C57'),
-        #'semantic2': ('#1C8090', '#A00D11', '#E0BB00'),
-        #'semantic3': ('#59C6DA', '#F75C57', '#FFDD00'),
-        'pos-neg A': ('#5CA632', '#CD1A1C'),
-        'pos-neg B': ('#5CA632', '#F5CC00', '#CD1A1C'),
-        'political A': ('#1479BB', '#ED3A35'),
-        'political B': ('#5AADF6', '#F98B83'),
-        'political C': ('#1479BB', '#ED3A35','#E0BB00'),
-        'political D': ('#5AADF6', '#F98B83', '#FFE926'),
-        #'categorical': ('#2599adff', '#00649fff', '#fd9d1fff', 
-        #                '#f5cc05ff', '#de60a1ff', '#9e0d12ff'),
-        'sequential (single hue)': ('#00649f', '#0f78ba', '#1c8ad6',
-                        '#2e97ea', '#56adf6', '#87c4fe', '#bcdefb'),
-        'sequential (two hues)' : ('#00649f', '#2a7a8b', '#559077', '#80a662', '#aabd4e', '#d4d33a', '#ffe926')
-        #'sequential2': ('#0d636fff', '#008080ff', '#009a80ff', '#2bb275ff',
-        #                '#6dc960ff', '#b1dc44ff', '#fce829ff'),
-        
-        'diverging':('#0f78ba', '#739fce', '#b1c5de',
-                    '#efefef', '#f6b5a9', '#f07867', '#e02928'),
-        #'misc': ('#3EB2C6', '#003A79', '#F5CC00'),
-
-        # Categorical
-        '1-color A': ('#003A70'),
-        '1-color B': ('#0061A0'),
-        '2-color A': ('#003A70', '#FF9E1B'),
-        '2-color B': ('#003A70', '#8BB8E8'),
-        '3-color A': ('#003A70', '#FF9E1B', '#8BB8E8'),
-        '3-color B': ('#003A70', '#FF9E1B', '#B1B3B3'),
-        '4-color A': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00'),
-        '4-color B': ('#003A70', '#FF9E1B', '#8BB8E8', '#B1B3B3'),
-        '5-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#B1B3B3'),
-        '6-color': ('#003A70', '#FF9E1B', '#8BB8E8', '#F2CD00', '#EF6A00', '#B1B3B3')
-        
-        # Extended palettes
-        'brand blue': ('#022A4E', '#003A70', '#1A4E80', '#326295', '#517EAD', '#7098C3', '#8DADD0', '#A8BDD5', '#DDE5ED'),
-        'vivid blue': ('#023147', '#004B6E', '#0061A0', '#1372BA', '#287EC9', '#418FDE', '#66ACED', '#8BB8E8', '#CAE1FA'),
-        'teal': ('#032B30', '#09484F', '#116470', '#1C8090', '#2A9AAD', '#3EB2C6', '#59C6DA', '#7CD9EA', '#A6E9F5'),
-        'green': ('#1A3404', '#294D0A', '#33660F', '#45821B', '#5CA632', '#7DBF52', '#9CD674', '#BDED9D', '#DEF5CC'),
-        'yellow': ('#594C09', '#877414', '#C7A70A', '#E0BB00', '#F2CD00', '#FFDD00', '#FFE926', '#FFF170', '#FFF9C2'),
-        'orange': ('#663205', '#994B08', '#B85B0A', '#EF6A00', '#FF851A', '#FF9E1B', '#FFB24D', '#FEC87F', '#FBD9A5'),
-        'red': ('#660507', '#A00D11', '#CD1A1C', '#E22827', '#ED3A35', '#F75C57', '#F98B83', '#FCB0AA', '#FDD7D4'),
-        'magenta': ('#510831', '#8D1655', '#A82168', '#BF317B', '#D2468E', '#E160A2', '#EC81B7', '#F5A8CF', '#FAD4E7'),
-        'purple': ('#3E2C72', '#533C91', '#6A50AD', '#7C60BF', '#8E72D0', '#9C82D9', '#B59DEA', '#D0BEF5', '#E9E0FC'),
-        'gray': ('191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2')
-    }
-    supported_palettes = list(palettes.keys())
+    supported_palettes = list(_palettes.keys())
 
     # Return all palette names if 
     if list_supported:
@@ -168,8 +142,53 @@ def get_palette(name, list_supported=False):
             f'"{name}" is not a valid color palette. \
                 Try one of the following: {supported_palettes}')
     
-    return palettes[name]
+    return _palettes[name]
 
+
+def get_color(name):
+    '''
+    Returns the hexcolor value of a named Brookings color
+    
+    name (str): The name of the Brookings color 
+                (e.g., 'brookings blue' or 'yellow 50')
+    '''
+    # Cleaning string
+    name = name.lower()
+    
+    # Checking for named colors
+    if name == 'brookings blue':
+        return '#003A70'
+    
+    if name == 'cool gray':
+        return '#B1B3B3'
+    
+    # Accessing color from color palettes
+    else:
+        color = ' '.join(name.split(' ')[0:-1])
+        # Converting string number to index
+        value = int((int(name.split(' ')[-1]) / -10) + 9)
+        
+        return get_palette(color)[value]
+    
+    
+def make_palette(colors, n, name):
+    '''
+    Given a list of colors and number of segments, creates a multi-hue 
+    sequential palette of n colors.
+    
+    colors (array): A list like object of colors to be used for the color palette
+    
+    n (int): Number of colors in the final palette (n > len(colors))
+    
+    name (str): Name of the palette (for access later on)
+    '''
+    # Interpolating between listed colors
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("", colors, N=n)
+    palette = tuple([mpl.colors.to_hex(cmap(i)) for i in range(n)])
+    
+    # Adding the named palette
+    _palettes[name] = palette
+    
 
 def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0):
     '''
