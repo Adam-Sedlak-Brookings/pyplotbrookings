@@ -7,8 +7,6 @@ from matplotlib import font_manager
 import numpy as np
 import os
 
-# TODO: New style guide does not use Roboto
-
 _palettes = {
         # Categorical
         '1-color A': ['#003A70'],
@@ -199,8 +197,7 @@ def make_palette(colors, n, name):
     _palettes[name] = palette
     
 
-def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0,
-              tag_length=0):
+def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0):
     '''
     Adds titles to the current figure.
 
@@ -219,10 +216,6 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0,
 
     text_pad (float): Number specifying additional amount of spacing to add
         between lines of text.
-        
-    tag_length (int): A number specifing the addition amount to increase the length
-        of the line after the figure number. This should be adjusted if the figure 
-        size is changed from (8, 4.5)
     '''
     # Get the font size
     font_size = mpl.rcParams['font.size']
@@ -233,7 +226,7 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0,
     text_pad = (0.47 + text_pad/100) * font_size
     
     # Add some blank space padding
-    plt.figtext(x, y, ' ', size=text_pad+8*text_pad)   
+    plt.figtext(x, y, ' ', size=text_pad+4*text_pad)   
 
     if subtitle:
         y = get_coords('top')
@@ -251,11 +244,19 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0,
 
     if tag:
         y = get_coords('top')
-        # Estimating the number of box tokens needed based on figure length
-        l = int(plt.gcf().get_size_inches()[0] * 10) + 2 + tag_length
-        # Adding figure tag
-        plt.figtext(x, y, tag.upper() + '   ' + '─'*l,
-                    size=0.75*font_size, weight='light', color='#666666')
+        right = get_coords('right') - x
+        # Adding the tag in a seprate subplot 
+        # Figure annotations can be finicky so a new subplot is easiest way to add them   
+        ax = plt.gcf().add_axes([x, y, right, 0.01], zorder=1)
+        ax.set_ylim(0.9, 1.25)
+        # Line at the top of th figure
+        ax.annotate('', xytext=(0, 1.25), xy=(1, 1.25), 
+                    arrowprops = dict(arrowstyle="-", linewidth=0.5, color='#666666'))
+        # Adding the tag annotation
+        text = ax.annotate(tag + '   ', (0, 1), fontsize=9, weight="light", color='#666666')
+        text.set_bbox(dict(facecolor='white'))
+        # Turning off axis so only text is displayed
+        ax.axis('off')
 
 
 def add_notes(*args, v_pad=-5, h_pad=0, text_pad=0):
