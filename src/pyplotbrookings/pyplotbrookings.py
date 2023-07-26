@@ -49,7 +49,7 @@ _palettes = {
         'gray': ('#191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
     }
 
-def set_theme(font_size=12, line_width=1.4, web=False):
+def set_theme(font_size=12, line_width=1.4, web=False, font_family='Helvetica'):
     '''
     Sets matplotlib default style parameters to be consistent with
     the Brookings style. 
@@ -62,6 +62,8 @@ def set_theme(font_size=12, line_width=1.4, web=False):
 
     web (bool): If the plot is for a website figure (the background color for 
         the website is an off white requiring a different color)
+
+    font_family (str): The font family for figures (either Helvetica or Roboto)
     '''
     # Reset matplotlib style parameters to the defaults
     mpl.rcdefaults()
@@ -101,7 +103,7 @@ def set_theme(font_size=12, line_width=1.4, web=False):
 
         'figure.figsize': (6, 4),
         'font.size': font_size,
-        'font.family': 'Helvetica', 
+        'font.family': font_family, 
 
         'grid.color': '#CCCCCC',
         'grid.linestyle': (0, (1, 4)),
