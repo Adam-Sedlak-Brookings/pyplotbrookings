@@ -99,7 +99,7 @@ def set_theme(font_size=12, line_width=1.4, web=False):
         'axes.prop_cycle': mpl.cycler(color=get_palette('6-color')),
         'image.cmap': get_cmap('sequential (two hues)'),
 
-        'figure.figsize': (8, 4.5),
+        'figure.figsize': (6, 4),
         'font.size': font_size,
         'font.family': 'Helvetica', 
 
