@@ -68,12 +68,12 @@ def set_theme(font_size=12, line_width=1.4, web=False):
     # Setting the background color
     background_color = '#FAFAFA' if web else '#FFFFFF'
 
-    '''# Setting up Roboto font
+    # Setting up Helvetica font
     cwd = os.path.join(os.path.dirname(__file__), 'fonts')
     font_files = font_manager.findSystemFonts(fontpaths=cwd, fontext="ttf")
 
     for font_file in font_files:
-        font_manager.fontManager.addfont(font_file)'''
+        font_manager.fontManager.addfont(font_file)
 
     # Dictionary of style features to set
     style_dict = {
