@@ -253,7 +253,7 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0)
         ax.annotate('', xytext=(0, 1.25), xy=(1, 1.25), 
                     arrowprops = dict(arrowstyle="-", linewidth=0.5, color='#666666'))
         # Adding the tag annotation
-        text = ax.annotate(tag + '   ', (0, 1), fontsize=9, weight="light", color='#666666')
+        text = ax.annotate(tag + '   ', (0, 1), fontsize=0.75*font_size, weight="light", color='#666666')
         text.set_bbox(dict(facecolor='white'))
         # Turning off axis so only text is displayed
         ax.axis('off')
