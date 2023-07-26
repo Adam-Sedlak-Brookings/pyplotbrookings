@@ -31,7 +31,14 @@ The `pyplotbrookings` package has a few simple user facing functions:
 
 -   `set_palette()` sets the `matplotlib` color cycler to one of
     the Brookings brand palettes.
-    - Valid color palettes are: `default`, `brand1`, `brand2`, `analogous1`, `analogous2`, `contrasting1`, `contrasting2`, `semantic1`, `semantic2`, `semantic3`, `pos_neg1`, `pos_neg2`, `political1`, `political2` `political3`, `political4`, `categorical`, `sequential1`, `sequential2`, `diverging`, `misc`, `brand blue`, `vivid blue`, `teal`, `green`, `yellow`, `orange`, `red`, `magenta`, `purple`
+    - Valid color palettes are: '1-color A', '1-color B', '2-color A', '2-color B', '3-color A', '3-color B', '4-color A',
+        '4-color B', '5-color', '6-color', 'sequential (single hue)', 'sequential (two hues)', 'diverging', 
+        'pos-neg A', 'pos-neg B', '2-political A', '2-political B', '3-political A', '3-political B', 
+        'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple', 'gray'
+        
+-   `get_color()` returns a Brookings brand color (e.g., "orange 20") from one of the extended color palettes
+
+-   `make_palette()` adds a custom named palette to the set of valid Brookings palettes
 
 -   `get_cmap()` returns a continuous palette (or color map) using one of
     the color Brookings color palettes.
@@ -81,8 +88,8 @@ Now we can create a figure using the following
 ax = sns.histplot(data=penguins.iloc[::-1], 
                   x='bill_depth_mm', 
                   hue='species', 
-                  # Setting the plot palette to Brookings brand2
-                  palette=ppb.get_palette('brand2'), 
+                  # Setting the plot palette to Brookings 3-colors
+                  palette=ppb.get_palette('3-color B'), 
                   bins=20)
 
 # Moving the legend in seaborn to the top
@@ -106,8 +113,8 @@ ppb.add_logo('hc')
 `pyplotbrookings` is designed to work with many different plots. Let's try creating a scatter plot that uses a colormap
 
 ```python
-# Getting the Brookings sequential2 color map
-cmap = ppb.get_cmap('sequential2', reverse=True)
+# Getting the Brookings sequential colormap
+cmap = ppb.get_cmap('sequential (two hues)', reverse=True)
 # Creating a scatter plot
 plt.scatter(data=penguins, x='bill_length_mm', y='bill_depth_mm', c='flipper_length_mm', cmap=cmap)
 
@@ -138,7 +145,7 @@ ppb.add_logo('crm', scale=0.35, offsets=(-0.1, 0))
 We could also create a box plot. Note that titles and notes auto-align to the left margin of the figure.
 ```python
 # Creating a boxplot
-sns.boxplot(data=penguins, x='bill_depth_mm', y='island', palette=ppb.get_palette('misc'))
+ax = sns.boxplot(data=penguins, x='bill_depth_mm', y='island', palette=ppb.get_palette('3-political A'))
 
 
 # Adding Brookings titles
@@ -152,8 +159,8 @@ ppb.add_notes('Source: Palmer Station Antarctica LTER',
 
 
 # Adding matplotlib legend/labels
-plt.xlabel('Bill Depth (mm)')
-plt.ylabel('Island')
+ax.set_xlabel('Bill Depth (mm)')
+ax.set_ylabel('Island')
 
 ppb.add_logo('crm', scale=0.35, offsets=(-0.1, 0))
 ```

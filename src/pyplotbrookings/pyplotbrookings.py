@@ -397,7 +397,7 @@ def add_logo(logo_path, offsets=(0, 0), scale=0.25, list_supported=False):
     ax.axis('off')
 
 
-def get_cmap(name, reverse=False):
+def get_cmap(name, reverse=False, **kargs):
     '''
     Given a palette name returns a Brookings theme colormap. 
     Note not all palettes (e.g., brand 1) should be used as colormaps.
@@ -414,7 +414,7 @@ def get_cmap(name, reverse=False):
         colors = colors[::-1]
 
     # Return a color map over the list of colors
-    return matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
+    return matplotlib.colors.LinearSegmentedColormap.from_list("", colors, **kargs)
 
 
 def set_palette(name, ax=None, reverse=False):
