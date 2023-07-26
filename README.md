@@ -4,7 +4,7 @@
 
 `pyplotbrookings` is a `matplotlib` extension which implements the Brookings
 Institution style guide. It offers several color palettes, a custom theme, and a few
-helper functions. `pyplotbrookings` is a python implementation of `ggbrookings`, 
+helper functions. `pyplotbrookings` is a python implementation of [`ggbrookings`](https://brookingsinstitution.github.io/ggbrookings/), 
 an R extension for `ggplot`.
 
 ## Installation
@@ -31,10 +31,10 @@ The `pyplotbrookings` package has a few simple user facing functions:
 
 -   `set_palette()` sets the `matplotlib` color cycler to one of
     the Brookings brand palettes.
-    - Valid color palettes are: '1-color A', '1-color B', '2-color A', '2-color B', '3-color A', '3-color B', '4-color A',
-        '4-color B', '5-color', '6-color', 'sequential (single hue)', 'sequential (two hues)', 'diverging', 
-        'pos-neg A', 'pos-neg B', '2-political A', '2-political B', '3-political A', '3-political B', 
-        'brand blue', 'vivid blue', 'teal', 'green', 'yellow', 'orange', 'red', 'magenta', 'purple', 'gray'
+    - Valid color palettes are: `1-color A`, `1-color B`, `2-color A`, `2-color B`, `3-color A`, `3-color B`, `4-color A`,
+        `4-color B`, `5-color`, `6-color`, `sequential (single hue)`, `sequential (two hues)`, `diverging`, 
+        `pos-neg A`, `pos-neg B`, `2-political A`, `2-political B`, `3-political A`, `3-political B`, 
+        `brand blue`, `vivid blue`, `teal`, `green`, `yellow`, `orange`, `red`, `magenta`, `purple`, `gray`
         
 -   `get_color()` returns a Brookings brand color (e.g., "orange 20") from one of the extended color palettes
 
@@ -63,6 +63,13 @@ The `pyplotbrookings` package has a few simple user facing functions:
 -   `save()` saves a figure in the Brookings advised dpi values depending
      on content type.
 
+## Updates
+### Whats New?!
+- Plotting has been updated to be consistent with the new [Brand Guidelines](https://brookingsinstitution.sharepoint.com/sites/IBCommunications/SiteAssets/Forms/AllItems.aspx?id=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea%2FVisual%2DIdentity%2DGuidelines%2D2023%5F07%5F07%2Epdf&parent=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea).
+- New palettes, a color picker, and palette maker have been added!
+    - Many palettes have been removed or renamed. If an older palette is critical all hope is not lost, just add it back in with `ppb.make_palette()`.
+-  New fonts and titles (Roboto is out Helvetica is in!)
+-  As always please reach out if you find bugs or styling inconsistencies. Thank you so much!
 
 ## Contact
 To report any bugs or discuss contributing to this package please contact Adam Sedlak or Valerie Wirtschafter.
@@ -165,3 +172,21 @@ ax.set_ylabel('Island')
 ppb.add_logo('crm', scale=0.35, offsets=(-0.1, 0))
 ```
 ![alt text](figures/Figure3.png)
+
+For more information on creating plots see `Examples.ipynb`.
+
+## Palettes
+
+Pyplotbrookings comes with a number of Brookings band colormaps (you can even make your own!), to learn more see the `Palettes.ipynb`.
+
+**Categorical Palettes**
+
+![alt text](figures/cmaps3.png)
+
+**Sequential Palettes/Colormaps**
+
+![alt text](figures/cmaps2.png)
+
+**Extended Palettes/Colormaps**
+
+![alt text](figures/cmaps1.png)
