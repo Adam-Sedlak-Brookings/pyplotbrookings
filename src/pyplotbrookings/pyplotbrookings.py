@@ -49,7 +49,7 @@ _palettes = {
         'gray': ('#191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
     }
 
-def set_theme(font_size=12, line_width=1.4, web=False):
+def set_theme(font_size=12, line_width=1.4, background_color='transparent'):
     '''
     Sets matplotlib default style parameters to be consistent with
     the Brookings style. 
@@ -60,13 +60,16 @@ def set_theme(font_size=12, line_width=1.4, web=False):
     line_width (float): A number specifying the default thickness of all
         lines in plots
 
-    web (bool): If the plot is for a website figure (the background color for 
-        the website is an off white requiring a different color)
+    background_color (str): The background color of the plot, specified as
+        a named color string (e.g., 'white') or hexcode (e.g., '#FFFFFF').
+        Defaults to a transparent plot background.
     '''
     # Reset matplotlib style parameters to the defaults
     mpl.rcdefaults()
-    # Setting the background color
-    background_color = '#FAFAFA' if web else '#FFFFFF'
+    
+    # Should the background plot be transparent
+    transparent = (background_color == 'transparent')
+    background_color = 'white' if transparent else background_color
 
     # Setting up Helvetica font
     cwd = os.path.join(os.path.dirname(__file__), 'fonts')
@@ -79,6 +82,7 @@ def set_theme(font_size=12, line_width=1.4, web=False):
     style_dict = {
         'axes.axisbelow': True,  # Place gride lines behind the plot
         'axes.facecolor': background_color,
+        'figure.facecolor': background_color,
 
         'axes.grid': True,
         'axes.grid.axis': 'y',
@@ -110,12 +114,15 @@ def set_theme(font_size=12, line_width=1.4, web=False):
         'legend.frameon': False,  # Remove legend border
         'legend.handlelength': 0.75,  # Shorten size of legend key
         'legend.borderaxespad': -1,  # Place legend outside the figure
+        'legend.fontsize': 0.833*font_size,
 
         'patch.linewidth': 0,
 
         'ytick.left': False,
         'ytick.labelsize': 0.833*font_size,
         'xtick.labelsize': 0.833*font_size,
+        
+        'savefig.transparent': transparent,
     }
     # Apply all styles
     for key, value in style_dict.items():
@@ -248,13 +255,14 @@ def add_title(title=None, subtitle=None, tag=None, v_pad=0, h_pad=0, text_pad=0)
         # Adding the tag in a seprate subplot 
         # Figure annotations can be finicky so a new subplot is easiest way to add them   
         ax = plt.gcf().add_axes([x, y, right, 0.01], zorder=1)
-        ax.set_ylim(0.9, 1.25)
-        # Line at the top of th figure
-        ax.annotate('', xytext=(0, 1.25), xy=(1, 1.25), 
-                    arrowprops = dict(arrowstyle="-", linewidth=0.5, color='#666666'))
-        # Adding the tag annotation
-        text = ax.annotate(tag + '   ', (0, 1), fontsize=0.75*font_size, weight="light", color='#666666')
-        text.set_bbox(dict(facecolor='white'))
+        
+        
+        ax.set_ylim(0.9, 1.5)
+        # Adding the tag and line at the top of the figure
+        ax.annotate(tag + '   ', xytext=(0, 1.25), xy=(1, 1.5), 
+                    fontsize=0.75*font_size, weight="light", color='#666666',
+                    arrowprops=dict(arrowstyle="-", linewidth=0.5, color='#666666'))
+        
         # Turning off axis so only text is displayed
         ax.axis('off')
 
@@ -414,7 +422,7 @@ def get_cmap(name, reverse=False, **kargs):
         colors = colors[::-1]
 
     # Return a color map over the list of colors
-    return matplotlib.colors.LinearSegmentedColormap.from_list("", colors, **kargs)
+    return mpl.colors.LinearSegmentedColormap.from_list("", colors, **kargs)
 
 
 def set_palette(name, ax=None, reverse=False):
@@ -493,7 +501,7 @@ def view_palette(name):
     palette_extended = np.append(palette, np.repeat('#FFFFFF', len(palette) % 2))
     
     # Create a color map
-    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", palette_extended)
+    cmap = mpl.colors.LinearSegmentedColormap.from_list("", palette_extended)
     # Plot the image
     plt.imshow(data, cmap=cmap)
     
