@@ -49,7 +49,8 @@ _palettes = {
         'gray': ('#191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
     }
 
-def set_theme(font_size=12, line_width=1.4, background_color='transparent'):
+def set_theme(font_size=12, line_width=1.4, font_family='Helvetica', 
+              background_color='transparent'):
     '''
     Sets matplotlib default style parameters to be consistent with
     the Brookings style. 
@@ -59,6 +60,8 @@ def set_theme(font_size=12, line_width=1.4, background_color='transparent'):
 
     line_width (float): A number specifying the default thickness of all
         lines in plots
+        
+    font_family (str): The font family for figures (either Helvetica or Roboto)
 
     background_color (str): The background color of the plot, specified as
         a named color string (e.g., 'white') or hexcode (e.g., '#FFFFFF').
@@ -105,7 +108,7 @@ def set_theme(font_size=12, line_width=1.4, background_color='transparent'):
 
         'figure.figsize': (6, 4),
         'font.size': font_size,
-        'font.family': 'Helvetica', 
+        'font.family': font_family, 
 
         'grid.color': '#CCCCCC',
         'grid.linestyle': (0, (1, 4)),
