@@ -49,7 +49,7 @@ _palettes = {
         'gray': ('#191919', '#404040', '#666666', '#757575', '#949494', '#B1B3B3', '#CCCCCC', '#E6E6E6', '#F2F2F2'),
     }
 
-def set_theme(font_size=12, line_width=1.4, font_family='Helvetica', 
+def set_theme(font_size=12, line_width=1.4, font_family='Inter', 
               background_color='transparent'):
     '''
     Sets matplotlib default style parameters to be consistent with
