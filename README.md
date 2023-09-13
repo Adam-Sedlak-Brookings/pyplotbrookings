@@ -63,8 +63,39 @@ The `pyplotbrookings` package has a few simple user facing functions:
 -   `save()` saves a figure in the Brookings advised dpi values depending
      on content type.
 
+## Best Practices
+
+### Brand
+For general design and brand requirements we recommend referencing the Brookings [Brand Guidelines](https://brookingsinstitution.sharepoint.com/sites/IBCommunications/SiteAssets/Forms/AllItems.aspx?id=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea%2FVisual%2DIdentity%2DGuidelines%2D2023%5F07%5F07%2Epdf&parent=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea).
+
+### Terminology
+Brookings uses the [following terminologies](https://www.brookings.edu/wp-content/uploads/2019/09/RaceEthnicityStyleGuideUpdates092319.pdf) in reference to racial/ethnic groups or individuals residing within the United States, corresponding to the census-based categories in parentheses.
+- Brookings’ publications capitalize **Black**, with flexibility to use **African American** (census-based racial category: Black or African American).
+- Brookings’ publications use **white** (census-based racial category: White). 
+- Brookings’ publications use **Asian American** (census-based racial category: Asian).
+- Brookings’ publications use **Native Hawaiian and Pacific Islander** (census-based racial category: Native Hawaiian or Other Pacific Islander) 
+- Brookings’ publications use **American Indian**, or alternatively, **Native American** (census-based racial category: American Indian or Alaska Native).
+- Brookings’ publications use Latino or Hispanic (census-based ethnic category: **Hispanic or Latino**). 
+
+### Do No Harm
+Often the **data** that we work with at Brookings **are people**. **It's our obligation and responsibility to respect individuals we are communicating about and avoid perpetuating harm in advertently**. We recommend users refer to the work done by Jonathan Schwabish and Alice Feng at the Urban Institute on applying racial equity to data visualization. 
+- [*Do No Harm*](https://www.urban.org/sites/default/files/publication/104296/do-no-harm-guide.pdf) report
+- [Data@Urban](https://urban-institute.medium.com/) 
+- [Jonathan Schwabish](https://policyviz.com/about/) homepage 
+
+### Accessability 
+Accessible visualizations should communicate information in *multiple* different forms (text, color, shape, size, etc). The brand color palettes are robust against the various forms of colorblindness; however, where possible we suggest that figures include the following.
+
+- [Different markers](https://matplotlib.org/stable/api/markers_api.html) in scatter plots to denote different subsets of data. 
+- [Various line styles](https://matplotlib.org/stable/gallery/lines_bars_and_markers/linestyles.html) (and/or thickness) in line plots to differentiate series from one another.
+- Add [hatching](https://matplotlib.org/stable/gallery/shapes_and_collections/hatch_style_reference.html) to fills on bar/box plots.
+- Use color! 🌈
+- Label data with text annotations where appropriate. 
+
+We also suggest submitting [alt text](https://en.wikipedia.org/wiki/Alt_attribute), [describing your figure](https://accessibility.huit.harvard.edu/describe-content-images), to Communications so that screen readers can read your figures.
+
 ## Updates
-### What's New?!
+### What's New?! 🚀 
 - Plotting has been updated to be consistent with the new [Brand Guidelines](https://brookingsinstitution.sharepoint.com/sites/IBCommunications/SiteAssets/Forms/AllItems.aspx?id=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea%2FVisual%2DIdentity%2DGuidelines%2D2023%5F07%5F07%2Epdf&parent=%2Fsites%2FIBCommunications%2FSiteAssets%2FSitePages%2FCrea).
 - New palettes, a color picker, and palette maker have been added!
     - Many palettes have been removed or renamed. If an older palette is critical all hope is not lost, just add it back in with `ppb.make_palette()`.
